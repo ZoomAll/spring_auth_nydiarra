@@ -1,13 +1,16 @@
 package ru.dwfe.auth_jwt.dao;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.SpringSecurityCoreVersion;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "roles")
-public class Role implements GrantedAuthority
+@Table(name = "authorities")
+public class Authority implements GrantedAuthority
 {
+    private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
+
     @Id
     @Column
     private String authority;
@@ -42,9 +45,9 @@ public class Role implements GrantedAuthority
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Role role = (Role) o;
+        Authority authority = (Authority) o;
 
-        return authority.equals(role.authority);
+        return this.authority.equals(authority.authority);
     }
 
     @Override
@@ -56,7 +59,7 @@ public class Role implements GrantedAuthority
     @Override
     public String toString()
     {
-        return "Role{" +
+        return "Authority{" +
                 "authority='" + authority + '\'' +
                 ", description='" + description + '\'' +
                 '}';

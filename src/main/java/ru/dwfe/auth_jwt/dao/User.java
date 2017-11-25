@@ -1,14 +1,21 @@
 package ru.dwfe.auth_jwt.dao;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.security.core.CredentialsContainer;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.SpringSecurityCoreVersion;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Set;
 
 @Entity
 @Table(name = "users")
-public class User
+public class User implements UserDetails, CredentialsContainer
 {
+    private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
+
     @Id
     @Column
     private String id;
@@ -17,17 +24,81 @@ public class User
     @Column
     private String password;
 
-    @Column(name = "first_name")
-    private String firstName;
-
-    @Column(name = "last_name")
-    private String lastName;
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role", referencedColumnName = "authority"))
-    private Set<Role> roles;
+    private Set<Authority> authorities;
+
+    @Column
+    private String firstName;
+    @Column
+    private String lastName;
+    @Column
+    private boolean accountNonExpired;
+    @Column
+    private boolean accountNonLocked;
+    @Column
+    private boolean credentialsNonExpired;
+    @Column
+    private boolean enabled;
+
+
+    /*
+        IMPLEMENTATION interfaces
+    */
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities()
+    {
+        return authorities;
+    }
+
+    @Override
+    public String getPassword()
+    {
+        return password;
+    }
+
+    @Override
+    public String getUsername()
+    {
+        return id;
+    }
+
+    @Override
+    public boolean isAccountNonExpired()
+    {
+        return accountNonExpired;
+    }
+
+    @Override
+    public boolean isAccountNonLocked()
+    {
+        return accountNonLocked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired()
+    {
+        return credentialsNonExpired;
+    }
+
+    @Override
+    public boolean isEnabled()
+    {
+        return enabled;
+    }
+
+    @Override
+    public void eraseCredentials()
+    {
+        password = "";
+    }
+
+    /*
+        GETTERs and SETTERs
+    */
 
     public String getId()
     {
@@ -39,14 +110,14 @@ public class User
         this.id = id;
     }
 
-    public String getPassword()
-    {
-        return password;
-    }
-
     public void setPassword(String password)
     {
         this.password = password;
+    }
+
+    public void setAuthorities(Set<Authority> authorities)
+    {
+        this.authorities = authorities;
     }
 
     public String getFirstName()
@@ -69,15 +140,29 @@ public class User
         this.lastName = lastName;
     }
 
-    public Set<Role> getRoles()
+    public void setAccountNonExpired(boolean accountNonExpired)
     {
-        return roles;
+        this.accountNonExpired = accountNonExpired;
     }
 
-    public void setRoles(Set<Role> roles)
+    public void setAccountNonLocked(boolean accountNonLocked)
     {
-        this.roles = roles;
+        this.accountNonLocked = accountNonLocked;
     }
+
+    public void setCredentialsNonExpired(boolean credentialsNonExpired)
+    {
+        this.credentialsNonExpired = credentialsNonExpired;
+    }
+
+    public void setEnabled(boolean enabled)
+    {
+        this.enabled = enabled;
+    }
+
+    /*
+        equals, hashCode, toString
+    */
 
     @Override
     public boolean equals(Object o)
@@ -101,10 +186,14 @@ public class User
     {
         return "User{" +
                 "id='" + id + '\'' +
-                ", password= ****" +
+                ", password=****" + password +
+                ", authorities=" + authorities +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", roles=" + roles +
+                ", accountNonExpired=" + accountNonExpired +
+                ", accountNonLocked=" + accountNonLocked +
+                ", credentialsNonExpired=" + credentialsNonExpired +
+                ", enabled=" + enabled +
                 '}';
     }
 }
