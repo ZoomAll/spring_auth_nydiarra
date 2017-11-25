@@ -19,16 +19,17 @@ CREATE TABLE `users` (
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci;
 
+
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `roles`;
 SET FOREIGN_KEY_CHECKS = 1;
 CREATE TABLE `roles` (
-  `id`        VARCHAR(255)
+  `name`        VARCHAR(255)
                 COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` VARCHAR(255)
                 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `roles_name_uindex` (`id`)
+  PRIMARY KEY (`name`),
+  UNIQUE KEY `roles_name_uindex` (`name`)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
@@ -36,7 +37,6 @@ CREATE TABLE `roles` (
 
 
 DROP TABLE IF EXISTS `user_role`;
-
 CREATE TABLE `user_role` (
   `user` VARCHAR(255)
          COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -44,11 +44,30 @@ CREATE TABLE `user_role` (
          COLLATE utf8mb4_unicode_ci NOT NULL,
   KEY `user_role_users_name_fk` (`user`),
   KEY `user_role_roles_name_fk` (`role`),
-  CONSTRAINT `user_role_roles_name_fk` FOREIGN KEY (`role`) REFERENCES `roles` (`id`)
-    ON DELETE CASCADE,
   CONSTRAINT `user_role_users_name_fk` FOREIGN KEY (`user`) REFERENCES `users` (`id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `user_role_roles_name_fk` FOREIGN KEY (`role`) REFERENCES `roles` (`name`)
     ON DELETE CASCADE
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci;
+
+LOCK TABLES `users` WRITE;
+INSERT INTO `users` VALUES
+  ('alex', '821f498d827d4edad2ed0960408a98edceb661d9f34287ceda2962417881231a', '', ''),
+  ('gonzo', '821f498d827d4edad2ed0960408a98edceb661d9f34287ceda2962417881231a', '', '');
+UNLOCK TABLES;
+
+LOCK TABLES `roles` WRITE;
+INSERT INTO `roles` VALUES
+  ('ROLE_ADMIN', 'Administrator'),
+  ('ROLE_USER', 'Standard user');
+UNLOCK TABLES;
+
+LOCK TABLES `user_role` WRITE;
+INSERT INTO `user_role` VALUES
+  ('alex', 'ROLE_ADMIN'),
+  ('alex', 'ROLE_USER'),
+  ('gonzo', 'ROLE_USER');
+UNLOCK TABLES;

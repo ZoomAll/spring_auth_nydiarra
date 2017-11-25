@@ -11,14 +11,14 @@ public class AppController
 {
 
     @RequestMapping(value = "/cities")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public String getUser()
     {
         return "cities = ok!";
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String getUsers()
     {
         return "users = ok!";
