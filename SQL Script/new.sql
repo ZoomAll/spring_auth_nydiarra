@@ -53,19 +53,14 @@ CREATE TABLE `user_role` (
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci;
 
-LOCK TABLES `users` WRITE;
+
+LOCK TABLES `users` WRITE, `roles` WRITE, `user_role` WRITE;
 INSERT INTO `users` VALUES
   ('alex', '821f498d827d4edad2ed0960408a98edceb661d9f34287ceda2962417881231a', '', ''),
   ('gonzo', '821f498d827d4edad2ed0960408a98edceb661d9f34287ceda2962417881231a', '', '');
-UNLOCK TABLES;
-
-LOCK TABLES `roles` WRITE;
 INSERT INTO `roles` VALUES
   ('ROLE_ADMIN', 'Administrator'),
   ('ROLE_USER', 'Standard user');
-UNLOCK TABLES;
-
-LOCK TABLES `user_role` WRITE;
 INSERT INTO `user_role` VALUES
   ('alex', 'ROLE_ADMIN'),
   ('alex', 'ROLE_USER'),

@@ -6,10 +6,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/springjwt")
 public class AppController
 {
-
     @RequestMapping(value = "/cities")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public String getUser()
