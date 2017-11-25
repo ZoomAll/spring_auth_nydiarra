@@ -25,23 +25,18 @@ public class UserDetailsServiceImpl implements UserDetailsService
     }
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException
+    public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException
     {
-        User user = userRepository.findByUsername(s);
+        User user = userRepository.findOne(id);
 
         if (user == null)
-            throw new UsernameNotFoundException(String.format("The username %s doesn't exist", s));
+            throw new UsernameNotFoundException(String.format("The user '%s' doesn't exist", id));
 
         Set<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toSet());
 
-//        List<GrantedAuthority> authorities = new ArrayList<>();
-//        user.getRoles().forEach(role -> {
-//            authorities.add(new SimpleGrantedAuthority(role.getName()));
-//        });
-
         return new org.springframework.security.core.userdetails.
-                User(user.getUsername(), user.getPassword(), authorities);
+                User(user.getId(), user.getPassword(), authorities);
     }
 }

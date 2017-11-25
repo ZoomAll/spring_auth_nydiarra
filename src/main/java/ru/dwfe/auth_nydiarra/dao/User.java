@@ -6,19 +6,15 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "app_user")
+@Table(name = "users")
 public class User
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    @Column
+    private String id;
 
-    @Column(name = "username")
-    private String username;
-
-    @Column(name = "password")
     @JsonIgnore
+    @Column
     private String password;
 
     @Column(name = "first_name")
@@ -33,28 +29,18 @@ public class User
      */
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+            joinColumns = @JoinColumn(name = "user", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role", referencedColumnName = "name"))
     private Set<Role> roles;
 
-    public Long getId()
+    public String getId()
     {
         return id;
     }
 
-    public void setId(Long id)
+    public void setId(String id)
     {
         this.id = id;
-    }
-
-    public String getUsername()
-    {
-        return username;
-    }
-
-    public void setUsername(String username)
-    {
-        this.username = username;
     }
 
     public String getPassword()

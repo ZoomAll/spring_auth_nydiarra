@@ -3,39 +3,24 @@ package ru.dwfe.auth_nydiarra.dao;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "app_role")
+@Table(name = "roles")
 public class Role
 {
-    private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column
+    private String name;
 
-    @Column(name = "role_name")
-    private String roleName;
-
-    @Column(name = "description")
+    @Column
     private String description;
 
-
-    public Long getId()
+    public String getName()
     {
-        return id;
+        return name;
     }
 
-    public void setId(Long id)
+    public void setName(String name)
     {
-        this.id = id;
-    }
-
-    public String getRoleName()
-    {
-        return roleName;
-    }
-
-    public void setRoleName(String roleName)
-    {
-        this.roleName = roleName;
+        this.name = name;
     }
 
     public String getDescription()
