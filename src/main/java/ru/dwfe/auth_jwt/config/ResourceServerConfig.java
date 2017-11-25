@@ -1,4 +1,4 @@
-package ru.dwfe.auth_nydiarra.configuration;
+package ru.dwfe.auth_jwt.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

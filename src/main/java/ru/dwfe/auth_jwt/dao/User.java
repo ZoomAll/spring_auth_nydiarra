@@ -1,4 +1,4 @@
-package ru.dwfe.auth_nydiarra.dao;
+package ru.dwfe.auth_jwt.dao;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -23,14 +23,10 @@ public class User
     @Column(name = "last_name")
     private String lastName;
 
-    /**
-     * Roles are being eagerly loaded here because
-     * they are a fairly small collection of items for this example.
-     */
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role", referencedColumnName = "name"))
+            inverseJoinColumns = @JoinColumn(name = "role", referencedColumnName = "authority"))
     private Set<Role> roles;
 
     public String getId()
@@ -105,7 +101,7 @@ public class User
     {
         return "User{" +
                 "id='" + id + '\'' +
-                ", password=[****]" +
+                ", password= ****" +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", roles=" + roles +

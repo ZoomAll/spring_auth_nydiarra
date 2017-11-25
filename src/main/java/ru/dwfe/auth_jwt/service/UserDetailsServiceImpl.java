@@ -1,17 +1,15 @@
-package ru.dwfe.auth_nydiarra.service;
+package ru.dwfe.auth_jwt.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import ru.dwfe.auth_nydiarra.dao.User;
-import ru.dwfe.auth_nydiarra.dao.UserRepository;
+import ru.dwfe.auth_jwt.dao.User;
+import ru.dwfe.auth_jwt.dao.repository.UserRepository;
 
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Component
 public class UserDetailsServiceImpl implements UserDetailsService
@@ -29,14 +27,12 @@ public class UserDetailsServiceImpl implements UserDetailsService
     {
         User user = userRepository.findOne(id);
 
+        System.out.printf("%s, user = %s%n", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), id);
+
         if (user == null)
             throw new UsernameNotFoundException(String.format("The user '%s' doesn't exist", id));
 
-        Set<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .collect(Collectors.toSet());
-
         return new org.springframework.security.core.userdetails.
-                User(user.getId(), user.getPassword(), authorities);
+                User(user.getId(), user.getPassword(), user.getRoles());
     }
 }

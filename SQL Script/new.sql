@@ -1,4 +1,4 @@
-USE auth_nydiarra;
+USE auth_jwt;
 
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `users`;
@@ -24,12 +24,12 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `roles`;
 SET FOREIGN_KEY_CHECKS = 1;
 CREATE TABLE `roles` (
-  `name`        VARCHAR(255)
+  `authority`   VARCHAR(255)
                 COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` VARCHAR(255)
                 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  PRIMARY KEY (`name`),
-  UNIQUE KEY `roles_name_uindex` (`name`)
+  PRIMARY KEY (`authority`),
+  UNIQUE KEY `roles_name_uindex` (`authority`)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
@@ -46,7 +46,7 @@ CREATE TABLE `user_role` (
   KEY `user_role_roles_name_fk` (`role`),
   CONSTRAINT `user_role_users_name_fk` FOREIGN KEY (`user`) REFERENCES `users` (`id`)
     ON DELETE CASCADE,
-  CONSTRAINT `user_role_roles_name_fk` FOREIGN KEY (`role`) REFERENCES `roles` (`name`)
+  CONSTRAINT `user_role_roles_name_fk` FOREIGN KEY (`role`) REFERENCES `roles` (`authority`)
     ON DELETE CASCADE
 )
   ENGINE = InnoDB
@@ -59,10 +59,10 @@ INSERT INTO `users` VALUES
   ('alex', '821f498d827d4edad2ed0960408a98edceb661d9f34287ceda2962417881231a', '', ''),
   ('gonzo', '821f498d827d4edad2ed0960408a98edceb661d9f34287ceda2962417881231a', '', '');
 INSERT INTO `roles` VALUES
-  ('ROLE_ADMIN', 'Administrator'),
-  ('ROLE_USER', 'Standard user');
+  ('ADMIN', 'Administrator'),
+  ('USER', 'Standard user');
 INSERT INTO `user_role` VALUES
-  ('alex', 'ROLE_ADMIN'),
-  ('alex', 'ROLE_USER'),
-  ('gonzo', 'ROLE_USER');
+  ('alex', 'ADMIN'),
+  ('alex', 'USER'),
+  ('gonzo', 'USER');
 UNLOCK TABLES;

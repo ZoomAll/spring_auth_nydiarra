@@ -1,26 +1,29 @@
-package ru.dwfe.auth_nydiarra.dao;
+package ru.dwfe.auth_jwt.dao;
+
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "roles")
-public class Role
+public class Role implements GrantedAuthority
 {
     @Id
     @Column
-    private String name;
+    private String authority;
 
     @Column
     private String description;
 
-    public String getName()
+    @Override
+    public String getAuthority()
     {
-        return name;
+        return authority;
     }
 
-    public void setName(String name)
+    public void setAuthority(String authority)
     {
-        this.name = name;
+        this.authority = authority;
     }
 
     public String getDescription()
@@ -41,20 +44,20 @@ public class Role
 
         Role role = (Role) o;
 
-        return name.equals(role.name);
+        return authority.equals(role.authority);
     }
 
     @Override
     public int hashCode()
     {
-        return name.hashCode();
+        return authority.hashCode();
     }
 
     @Override
     public String toString()
     {
         return "Role{" +
-                "name='" + name + '\'' +
+                "authority='" + authority + '\'' +
                 ", description='" + description + '\'' +
                 '}';
     }

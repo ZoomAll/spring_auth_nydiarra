@@ -1,4 +1,4 @@
-package ru.dwfe.auth_nydiarra.configuration;
+package ru.dwfe.auth_jwt.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,14 +24,14 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter
 {
-    @Value("${security.signing-key}")
-    private String signingKey;
+    @Value("${security.security-realm}")
+    private String securityRealm;
 
     @Value("${security.encoding-strength}")
     private Integer encodingStrength;
 
-    @Value("${security.security-realm}")
-    private String securityRealm;
+    @Value("${security.signing-key}")
+    private String signingKey;
 
     private final UserDetailsService userDetailsService;
 

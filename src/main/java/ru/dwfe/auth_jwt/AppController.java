@@ -1,4 +1,4 @@
-package ru.dwfe.auth_nydiarra;
+package ru.dwfe.auth_jwt;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class AppController
 {
     @RequestMapping(value = "/cities")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PreAuthorize("hasAuthority('USER')")
     public String getUser()
     {
         return "cities = ok!";
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String getUsers()
     {
         return "users = ok!";
