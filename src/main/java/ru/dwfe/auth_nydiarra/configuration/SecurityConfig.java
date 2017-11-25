@@ -24,7 +24,6 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter
 {
-
     @Value("${security.signing-key}")
     private String signingKey;
 
