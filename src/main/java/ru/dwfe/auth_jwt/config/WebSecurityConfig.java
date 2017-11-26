@@ -1,10 +1,8 @@
 package ru.dwfe.auth_jwt.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -14,19 +12,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
-import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 {
-    @Value("${security.signing-key}")
-    private String signingKey;
-
     private final UserDetailsService userDetailsService;
 
     @Autowired
@@ -57,7 +48,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 
         //Любой алгоритм кодирования(хеширования) не предназначен для обеспечения безопасности.
         //Поэтому на стороне бэкенда пароли в базе в виде BCrypt хеша это всего лишь попытка
-        //защититься от дурака, который максимум может скопировать чужой пароль в открытом виде.
+        //защититься от дурака, который максимум может скопировать чужой пароль в открытом виде
+        //либо его хеш и который не умеет/желает брутфорсить.
     }
 
     @Bean
@@ -65,30 +57,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
     protected AuthenticationManager authenticationManager() throws Exception
     {
         return super.authenticationManager();
-    }
-
-    @Bean
-    public JwtAccessTokenConverter accessTokenConverter()
-    {
-        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        converter.setSigningKey(signingKey);
-        return converter;
-    }
-
-    @Bean
-    public TokenStore tokenStore()
-    {
-        return new JwtTokenStore(accessTokenConverter());
-    }
-
-    @Bean
-    @Primary
-    //Making this primary to avoid any accidental duplication with another token service instance of the same name
-    public DefaultTokenServices tokenServices()
-    {
-        DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
-        defaultTokenServices.setTokenStore(tokenStore());
-        defaultTokenServices.setSupportRefreshToken(true);
-        return defaultTokenServices;
     }
 }
