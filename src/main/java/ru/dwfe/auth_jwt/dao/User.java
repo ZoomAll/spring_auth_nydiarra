@@ -25,9 +25,9 @@ public class User implements UserDetails, CredentialsContainer
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_role",
+    @JoinTable(name = "user_authority",
             joinColumns = @JoinColumn(name = "user", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role", referencedColumnName = "authority"))
+            inverseJoinColumns = @JoinColumn(name = "authority", referencedColumnName = "authority"))
     private Set<Authority> authorities;
 
     @Column
@@ -186,7 +186,7 @@ public class User implements UserDetails, CredentialsContainer
     {
         return "User{" +
                 "id='" + id + '\'' +
-                ", password=****" + password +
+                ", password=****" +
                 ", authorities=" + authorities +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

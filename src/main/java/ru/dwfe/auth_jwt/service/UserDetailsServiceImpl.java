@@ -27,10 +27,9 @@ public class UserDetailsServiceImpl implements UserDetailsService
     {
         User user = userRepository.findOne(id);
 
-        System.out.printf("%s, user = %s%n", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), id);
+        System.out.printf("%s, user = %s%n", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), user);
 
-        if (user == null)
-            throw new UsernameNotFoundException(String.format("The user '%s' doesn't exist", id));
+        if (user == null) throw new UsernameNotFoundException(String.format("The user doesn't exist: %s", user));
 
         return user;
     }

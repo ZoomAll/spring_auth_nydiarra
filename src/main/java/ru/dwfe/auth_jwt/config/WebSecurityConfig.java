@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
@@ -22,21 +22,15 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 {
-    @Value("${security.security-realm}")
-    private String securityRealm;
-
-    @Value("${security.encoding-strength}")
-    private Integer encodingStrength;
-
     @Value("${security.signing-key}")
     private String signingKey;
 
     private final UserDetailsService userDetailsService;
 
     @Autowired
-    public SecurityConfig(UserDetailsService userDetailsService)
+    public WebSecurityConfig(UserDetailsService userDetailsService)
     {
         this.userDetailsService = userDetailsService;
     }
@@ -49,7 +43,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
             .httpBasic()
-            .realmName(securityRealm)
                 .and()
             .csrf()
             .disable();
@@ -59,8 +52,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     protected void configure(AuthenticationManagerBuilder auth) throws Exception
     {
         auth
-            .userDetailsService(userDetailsService)
-            .passwordEncoder(new ShaPasswordEncoder(encodingStrength));
+            .userDetailsService(userDetailsService)         //проверка существования входящего user ID в базе
+            .passwordEncoder(new BCryptPasswordEncoder());  //проверка raw пароля пользователя
+
+        //Любой алгоритм кодирования(хеширования) не предназначен для обеспечения безопасности.
+        //Поэтому на стороне бэкенда пароли в базе в виде BCrypt хеша это всего лишь попытка
+        //защититься от дурака, который максимум может скопировать чужой пароль в открытом виде.
     }
 
     @Bean

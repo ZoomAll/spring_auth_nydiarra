@@ -60,13 +60,13 @@ CREATE TABLE `user_authority` (
 
 LOCK TABLES `users` WRITE, `authorities` WRITE, `user_authority` WRITE;
 INSERT INTO `users` VALUES
-  ('alex', '821f498d827d4edad2ed0960408a98edceb661d9f34287ceda2962417881231a', '', '', 1, 1, 1, 1),
-  ('gonzo', '821f498d827d4edad2ed0960408a98edceb661d9f34287ceda2962417881231a', '', '', 1, 1, 1, 1);
+  ('admin', '$2y$10$7FmXphF7JFK45uXwwmwTUeEVG6r9UedcJIoKAEYYKkjB5ZyQcFXeC', '', '', 1, 1, 1, 1),
+  ('user', '$2y$10$dVVaFsrQoUhskctl604rjOG3A2Rj5AMWYqNR3nF87DKgo3yTD3hDu', '', '', 1, 1, 1, 1);
 INSERT INTO `authorities` VALUES
   ('ADMIN', 'Administrator'),
   ('USER', 'Standard user');
 INSERT INTO `user_authority` VALUES
-  ('alex', 'ADMIN'),
-  ('alex', 'USER'),
-  ('gonzo', 'USER');
+  ('admin', 'ADMIN'),
+  ('admin', 'USER'),
+  ('user', 'USER');
 UNLOCK TABLES;
