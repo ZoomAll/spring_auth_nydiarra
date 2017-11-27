@@ -27,9 +27,9 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter
                             TokenStore tokenStore,
                             AccessTokenConverter accessTokenConverter)
     {
+        this.authenticationManager = authenticationManager;
         this.tokenStore = tokenStore;
         this.accessTokenConverter = accessTokenConverter;
-        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -39,11 +39,29 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter
         //Access Token Request: https://tools.ietf.org/html/rfc6749#section-4.3.2
 
         configurer
-                .inMemory()
-                .withClient("clientid")
-                .secret("clientsecret")
-                .authorizedGrantTypes("password")
-                .scopes("all");
+                .inMemory() //in case of JWT, token is NOT stored in memory!
+                            //Moreover, the token is not stored anywhere on the server.
+
+                    .withClient("Standard")
+                    .secret("Login")
+                    .scopes("all")
+                    .accessTokenValiditySeconds(60 * 60 * 24 * 10) // 10 days
+
+                .and()
+
+                    .withClient("ThirdParty")
+                    .secret("Computer")
+                    .scopes("all")
+                    .accessTokenValiditySeconds(60 * 3) // 3 minutes
+        ;
+
+        //Здесь Клиентом является Фронтэнд.
+        //В качестве фронтенда может быть обычная HTML страничка + JavaScript, либо фреймворк, например, Angular.
+        //Если User логинится на Клиенте, то клиент должен методом POST отправить запрос на сервер.
+        //Протестировать логинг можно так:
+        //curl withClient:secret@localhost:8080/oauth/token -d grant_type=password -d username=UserLogin -d password=UserPass
+        //
+        //В ответ придет JSON, внутри которого будет токен.
     }
 
     @Override

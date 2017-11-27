@@ -1,14 +1,12 @@
 package ru.dwfe.auth_jwt.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
 @Configuration
@@ -27,26 +25,21 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter
     public void configure(HttpSecurity http) throws Exception
     {
         http
-            .requestMatchers()
-                .and()
-            .authorizeRequests()
-                .antMatchers("/actuator/**", "/api-docs/**").permitAll()
-                .antMatchers("/springjwt/**").authenticated();
+                //with JWT don't need protection from CSRF, because RESTful
+                .csrf().disable()
+
+                //with JWT don't need sessions, because RESTful
+                //вообще говоря ссессия-то все равно создается: HttpServletRequest request, request.getSession()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+
+                //for prevent exception: Cannot apply ExpressionUrlAuthorizationConfigurer
+                .authorizeRequests().anyRequest().permitAll()
+        ;
     }
 
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception
     {
-        resources.tokenServices(tokenServices());
-    }
-
-    @Bean
-    @Primary
-    public DefaultTokenServices tokenServices()
-    {
-        DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
-        defaultTokenServices.setTokenStore(tokenStore);
-        defaultTokenServices.setSupportRefreshToken(true);
-        return defaultTokenServices;
+        resources.tokenStore(tokenStore);
     }
 }
